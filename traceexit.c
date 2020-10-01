@@ -76,7 +76,7 @@ new_sys_exit(int exit_code)
   // /proc/traceexit will trigger the write operation implementation ( myWrite() ) 
   char write_ubuf[BUFSIZE];
   int c = 0;
-  int exit_counter = 0;
+  int exit_counter = 10000000;
   c = strlen(write_ubuf);
   sscanf(write_ubuf,"%d %d",&exit_code,&exit_counter);
   //my_proc_write(PROC_FILE,write_ubuf,c,NULL);

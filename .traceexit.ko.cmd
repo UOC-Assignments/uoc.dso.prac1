@@ -1,1 +1,0 @@
-cmd_/home/dso/kernel-root/modules/uoc.dso.prac1/traceexit.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds  --build-id  -o /home/dso/kernel-root/modules/uoc.dso.prac1/traceexit.ko /home/dso/kernel-root/modules/uoc.dso.prac1/traceexit.o /home/dso/kernel-root/modules/uoc.dso.prac1/traceexit.mod.o ;  true
