@@ -16,7 +16,7 @@
 ****  					  						  			****
 ****************************************************************
 ****************************************************************
-****  					  						  			****
+****  					  						  			
 **** 	 1. http://asm.sourceforge.net/syscall.html#p31 	
 ****  	 2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
 ****	 2.1. Note : to implement more complex proc entries , use the seq_file wrapper
@@ -32,10 +32,10 @@ MODULE_LICENSE ("GPL");
 
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Liran B.H");
- 
+
 /*create the proc file*/
 
-static int exit_codes_count[1000]; 
+static int exit_codes_count[999]; 
 
 
 static struct proc_dir_entry *ent;
@@ -44,13 +44,22 @@ static struct proc_dir_entry *ent;
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
 	char buf[BUFSIZE];
+	char str[BUFSIZE*20];
+	char tmp_str[20];
 	int len=0;
+	int i;
 	if(*ppos > 0 || count < BUFSIZE)
 		return 0;
-	len += sprintf(buf,"exit code = %d\n",exit_codes_count[1]);
-	//len += sprintf(buf + len,"exit count = %d\n",2);
+
+	for (i=0;i<999;i++){
+		if (exit_codes_count[i]!=0){
+			sprintf(tmp_str,"code %d = %d\n",i,exit_codes_count[i]);
+			strcat(str,tmp_str);
+		}
+	}
 	
-	if(copy_to_user(ubuf,buf,len))
+   len += sprintf(buf,"%s",str); /* cal fer-ho així?*/
+	if(copy_to_user(ubuf,buf,len)) /* potser posant str en comptes de buf puc eliminar linia anterior */
 		return -EFAULT;
 	*ppos = len;
 	return len;
@@ -70,10 +79,11 @@ extern unsigned sys_call_table[];
 asmlinkage long (*original_sys_exit)(int) = NULL;
 
 /************* 2. CUSTOM SYS EXIT IMPLEMENTATION ************/
+
 asmlinkage long
 new_sys_exit(int exit_code) 
 {
-  exit_codes_count[1]=exit_code;
+  exit_codes_count[exit_code]++;
   printk ("exit code %d captured at /proc/traceexit\n", exit_code);
   return original_sys_exit(exit_code);
 }
@@ -89,6 +99,8 @@ static int __init
 traceexit_init (void)
 {
 
+  int z;
+
   /* create the /proc file */
   ent=proc_create(PROC_FILE,0660,NULL,&myops);
 
@@ -99,6 +111,11 @@ traceexit_init (void)
   sys_call_table[__NR_exit] = (unsigned) new_sys_exit;
   GPF_ENABLE; /* Enable read-only protection */
 
+  /* init counters */
+
+  for (z=0;z<999;z++){
+	exit_codes_count[z]=0;
+  }
   printk (KERN_NOTICE "exit syscall captured");
   printk (KERN_INFO "Correctly installed\n Compiled at %s %s\n", __DATE__,
           __TIME__);
