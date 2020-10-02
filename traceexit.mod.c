@@ -32,14 +32,14 @@ __attribute__((section("__versions"))) = {
 	{ 0xf4396a30, "remove_proc_entry" },
 	{ 0x4d0ee1ca, "sys_call_table" },
 	{ 0xca1756b6, "proc_create" },
-	{ 0x37a0cba, "kfree" },
-	{ 0x362ef408, "_copy_from_user" },
-	{ 0x12da5bb2, "__kmalloc" },
 	{ 0x818d7bdd, "seq_printf" },
 	{ 0x1e6a522d, "single_open" },
 	{ 0xe445e0e7, "printk" },
 	{ 0x20c55ae0, "sscanf" },
 	{ 0xd0d8621b, "strlen" },
+	{ 0x37a0cba, "kfree" },
+	{ 0x362ef408, "_copy_from_user" },
+	{ 0x12da5bb2, "__kmalloc" },
 };
 
 static const char __module_depends[]
@@ -48,4 +48,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "F7ACBFAF0BEF645FD13396D");
+MODULE_INFO(srcversion, "041536F0807591B11F3574A");

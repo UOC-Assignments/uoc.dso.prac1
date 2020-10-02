@@ -12,7 +12,6 @@
 #define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) /* Disable read-only protection */
 #define GPF_ENABLE write_cr0(read_cr0() | 0x10000) /* Enable read-only protection */
 
-
 /******* 1. PROC FS OPERATIONS IMPLEMENTATION **********/
 
 static char *str = NULL;
@@ -39,6 +38,7 @@ static int my_proc_open(struct inode *inode,struct file *file){
 	return single_open(file,my_proc_show,NULL);
 }
 
+/* Comment this to disable user interfacing from shell */
 static struct file_operations my_fops={
 	.owner = THIS_MODULE,
 	.open = my_proc_open,
@@ -78,8 +78,9 @@ new_sys_exit(int exit_code)
   int c = 0;
   int exit_counter = 0;
   c = strlen(write_ubuf);
+
   sscanf(write_ubuf,"%d %d",&exit_code,&exit_counter);
-  //my_proc_write(PROC_FILE,write_ubuf,c,NULL);
+  my_proc_write(PROC_FILE,write_ubuf,c,1000);
 
   /* 2.4. Close file, print message and execute exit syscall */
 
@@ -105,8 +106,9 @@ static int __init traceexit_init(void){
    }
 
    /* Enable custom exit syscall */
+
    original_sys_exit = (asmlinkage long (*)(int))(sys_call_table[__NR_exit]);
-  
+   
    GPF_DISABLE; /* Disable read-only protection (sys_call_table is on a read-only page )*/
    sys_call_table[__NR_exit] = (unsigned) new_sys_exit;
    GPF_ENABLE; /* Enable read-only protection */
