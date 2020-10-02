@@ -10,8 +10,9 @@
  #                         OPERATIVE SYSTEMS DESIGN (DSO)                       #
  #                             PRACTICAL ASSIGNMENT 1                           #
  #                                                                              #
- #                           STUDENT: Jordi Bericat Ruz                         #
- #                              TERM: Autumn 2020/21                            #
+ #                        STUDENT: Jordi Bericat Ruz                            #
+ #                           TERM: Autumn 2020/21                               #
+ #					     GIT REPO: UOC-Assignments/uoc.dso.prac1"               #
  #                                                                              #
  #                            FILE 1 OF 1: traceexit.c                          #
  #                                                                              #
@@ -87,6 +88,7 @@
 #include <asm/unistd_32.h> // syscall asm implementations (__NR_exit, etc) 
 
 MODULE_LICENSE ("GPL");
+MODULE_AUTHOR ("Jordi B.R.");
 
 #define BUFSIZE  100
 #define PROC_FILE "traceexit" // more efficient alternative(?) -> const char *HELLO2 = "Howdy";
@@ -104,9 +106,8 @@ static int exit_codes_count[999];
  ################################################################################ */ 
 
 
-/* Adaptació del següent codi original: */
-MODULE_LICENSE("Dual BSD/GPL");
-MODULE_AUTHOR("Liran B.H");
+//######## 2.0 DISCLAIMER: The code below is an adaptation from the code found 
+//########     at ->  
 
 //######## 2.1 create the proc file
 
