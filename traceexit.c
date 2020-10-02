@@ -174,7 +174,7 @@ asmlinkage long new_sys_exit(int exit_code)
 
 /*###############################################################################
  #                                                                              #
- #                      		   4. INIT / EXIT              				    #
+ #                      		   4. INIT / EXIT                               #
  #                                                                              #
  ##############################################################################*/
 
@@ -261,13 +261,13 @@ module_exit (traceexit_exit);
 
 /*###############################################################################
  #                                                                              #
- #                             5. BIBLIOGRAPHY / SOURCES              			#
+ #                             5. BIBLIOGRAPHY / SOURCES                        #
  #                                                                              #
  ################################################################################ 
  					  						  			
-       1. http://asm.sourceforge.net/syscall.html#p31 	
-       2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
-       3. https://www.linuxjournal.com/article/8110
-       4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html				  						  	
+     1. http://asm.sourceforge.net/syscall.html#p31 	
+     2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
+     3. https://www.linuxjournal.com/article/8110
+     4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html				  						  	
 
 */
