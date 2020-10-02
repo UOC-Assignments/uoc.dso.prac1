@@ -25,28 +25,29 @@
 #                                                                             #
 #  DESCRIPTION:                                                				  #
 #                                                                             #
-L’objectiu és implementar una interfície de comunicació entre els espais
- de memoria d’usuari i del procés associat al mòdul (kernel), de manera 
-que un usuari podrá llegir desde la Shell (espai d’usuari) les dades 
-emmagatzamades a l’espai de mem. física exclusiva per al kernel 
-(comptadors crides sys_exit) mitjançant el fitxer procfs “virtual” 
-(interficie) “cat /proc/traceexit”. La escriptura es realitzarà des de 
-l’espai del kernel fet pel qual no caldrà una interficie d’escriptura 
-entre els dos espais de memoria (només s’ha d’implementar la interficie 
-de lectura.
-
-Pel que fa al monitoreig de les crides sys_exit i els seus codis 
-associats, només caldrà associar el codi de baix nivel (asm) que 
-realitza les tasques associades a la rutina sys_exit a una nova funció 
-(new_sys_exit) i assignar la execució d'aquesta al vector de crides del
-sistema (sys_call_table). En resum, estariem fent un "bypass" de la 
-crida original_sys_exit via la crida new_sys_exit, la qual a part 
-de realitzar la execució de les instruccions de la crida sys_exit, també
-emmagatzema la quantitat de vegades que s'executa un exit code concret 
-a l'array exit_codes_count[] (el qual tindrà un scope global accessible
-dins l'espai de memòria del kernel assignat al procés del mòdul;
+#                                                                             #
 #                                                                             #
 #  IMPLEMENTATION STRATEGY:                                                   #
+#                                                                             #
+#  Exit System calls monitoring                                               #
+#                                                                             #
+#  In regards to the exit syscall codes monitoring, we only have to call the  #
+#  low-level assembler code which performs the sys_exit call associated tasks #
+#  to a new function (new_sys_exit) and then link it to the system calls      #
+#  vector (sys_call_table). Summing-up: this way we "bypass" the original     #
+#  sys_exit call (original_sys_exit) so we can modify its behaviour (in our   #
+#  case, to keep track of every exit system call executed once the kernel     #
+#  module becomes enabled (insmod traceexit.ko).                              #
+#                                                                             #
+#  Procfs Interface implementation                                            #
+#                                                                             #
+#  The goal is to implement a communication interface between the user memory #
+#  space and the one associated with the kernel module, so an user would be   #
+#  able to read from the shell (user memory space) the data stored in the     #
+#  physical memory space reserved to the kernel (exit syscalls counters) via  #
+#  the procfs "virtual" interface -> cat "/proc/traceexit. Writing operations #
+#  will be performed from within the module (kernel memory space), so a       #
+#  writing interface from user to kernel space won't be needed.               #
 #                                                                             #
 #                                                                             #
 #  INPUT:  		 			 									              #
