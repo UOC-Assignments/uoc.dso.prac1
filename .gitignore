@@ -1,0 +1,85 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@jbericat 
+github
+/
+gitignore
+3.2k
+108k
+57.9k
+Code
+Pull requests
+199
+Actions
+Projects
+Security
+Insights
+gitignore/C.gitignore
+@chaosdefinition
+chaosdefinition Update C.gitignore
+…
+Latest commit f76d089 on Oct 31, 2016
+ History
+ 9 contributors
+@rye@dashed@Leandros@snisarg@dybekm@eugpermar@starrify@chaosdefinition@arsenm
+52 lines (44 sloc)  430 Bytes
+  
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
