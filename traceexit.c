@@ -113,7 +113,7 @@ static struct proc_dir_entry *ent;
  
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
-	char buf[BUFSIZE];
+	char buf[BUFSIZE*20];
 	char str[BUFSIZE*20];
 	char tmp_str[20];
 	int len=0;
@@ -128,8 +128,8 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 		}
 	}
 	
-   len += sprintf(buf,"%s",str); /* cal fer-ho així?*/
-	if(copy_to_user(ubuf,buf,len)) /* potser posant str en comptes de buf puc eliminar linia anterior */
+   len += sprintf(buf,"%s",str); 
+	if(copy_to_user(ubuf,buf,len)) 
 		return -EFAULT;
 	*ppos = len;
 	return len;
