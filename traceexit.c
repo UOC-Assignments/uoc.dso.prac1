@@ -96,6 +96,7 @@ MODULE_AUTHOR ("Jordi B.R.");
 #define GPF_ENABLE write_cr0(read_cr0() | 0x10000) // Enable read-only protection 
 
 static int exit_codes_count[999];
+static struct proc_dir_entry *ent;
 
 /*
 
@@ -105,15 +106,10 @@ static int exit_codes_count[999];
  #                                                                              #
  ################################################################################ */ 
 
+// ######## DISCLAIMER: The code below is an adaptation from the one found at
+// ########             BIBLIOGRAPHY (2)
 
-//######## 2.0 DISCLAIMER: The code below is an adaptation from the code found 
-//########     at ->  
-
-//######## 2.1 create the proc file
-
-static struct proc_dir_entry *ent;
-
-//######## 2.2 Implement the read from user space procfs operation
+// ######## 2.1 Implement the read from user space procfs operation
  
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
@@ -139,8 +135,8 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 	return len;
 }
 
-//######## 2.3 Set our custom read operation as default to access the module's
-//########     process memory space	
+// ######## 2.2 Set our custom read operation as default to access the module's
+// ########     process memory space	
 
 static struct file_operations myops = 
 {
@@ -155,14 +151,14 @@ static struct file_operations myops =
  #                                                                              #
  ################################################################################ */
 
+// ######## DISCLAIMER: The code below is an adaptation from the ones found at:
+// ########             -> "traceopen.c" provided in this assignment's .zip file  
+
 extern unsigned sys_call_table[];
 
 asmlinkage long (*original_sys_exit)(int) = NULL;
 
-/************* 2.  ************/
-
-asmlinkage long
-new_sys_exit(int exit_code) 
+asmlinkage long new_sys_exit(int exit_code) 
 {
   exit_codes_count[exit_code]++;
   printk ("exit code %d captured at /proc/traceexit\n", exit_code);
@@ -172,9 +168,14 @@ new_sys_exit(int exit_code)
 /*
  ################################################################################
  #                                                                              #
- #                      			  4. MAIN                      				#
+ #                      		   4. INIT / EXIT              				    #
  #                                                                              #
  ################################################################################ */
+
+// ######## DISCLAIMER: The code below is an adaptation from the ones found at:
+// ########             -> "traceopen.c" provided in this assignment's .zip file  
+
+// ######## 4.1 - Module INIT Function
 
 static int __init
 traceexit_init (void)
@@ -182,38 +183,65 @@ traceexit_init (void)
 
   int z;
 
-  /* create the /proc file */
+// ######## 4.1.1 - Create the proc file
+
   ent=proc_create(PROC_FILE,0660,NULL,&myops);
 
-  /* Enable syscalls */
+// ######## 4.1.2 - Link sys_exit call original asm code to original_sys_exit (pointer to function)
+  
   original_sys_exit = (asmlinkage long (*)(int))(sys_call_table[__NR_exit]);
   
-  GPF_DISABLE; /* Disable read-only protection (sys_call_table is on a read-only page )*/
-  sys_call_table[__NR_exit] = (unsigned) new_sys_exit;
-  GPF_ENABLE; /* Enable read-only protection */
+// ######## 4.1.3 - Disable read-only protection (sys_call_table is on a read-only page )*/
+  
+  GPF_DISABLE; 
 
-  /* init counters */
+// ######## 4.1.4 - Link our custom definition of sys_exit (new_sys_exit) in the 
+// ########         __NR_Exit entry of the system calls vector (sys_call_table).
+ 
+  sys_call_table[__NR_exit] = (unsigned) new_sys_exit;
+
+// ######## 4.1.5 - Enable read-only protection
+
+  GPF_ENABLE; 
+
+// ######## 4.1.6 - Init sys_exit counters
 
   for (z=0;z<999;z++){
 	exit_codes_count[z]=0;
   }
+
   printk (KERN_NOTICE "exit syscall captured");
   printk (KERN_INFO "Correctly installed\n Compiled at %s %s\n", __DATE__,
           __TIME__);
   return (0);
 }
 
+// ######## 4.2 - Module INIT Function
+
 static void __exit
 traceexit_exit (void)
 {
-  /* Remove procfs entry */
+// ######## 4.2.1 - Remove procfs entry
+
   proc_remove(ent);
 
-  /* Restore previous state */
+// ######## 4.2.2 - Restore previous state
+
   if (sys_call_table[__NR_exit] == (unsigned) new_sys_exit) {
-    GPF_DISABLE; /* Disable read-only protection (sys_call_table is on a read-only page )*/
+
+// ######## 4.2.3 - Disable read-only protection (sys_call_table is on a read-only page )
+
+    GPF_DISABLE; 
+
+// ######## 4.2.4 - Link back the original definition of sys_exit 
+// ########         (original_sys_exit) in the __NR_Exit entry of the system calls
+// ########         vector (sys_call_table).
+
     sys_call_table[__NR_exit] = (unsigned) original_sys_exit;
-    GPF_ENABLE; /* Enable read-only protection */
+
+// ######## 4.2.5 - Enable read-only protection 
+
+    GPF_ENABLE; 
 
     printk (KERN_NOTICE "exit syscall restored\n");
   }
@@ -225,19 +253,16 @@ module_init (traceexit_init);
 module_exit (traceexit_exit);
 
 
-/***************************************************************
-****************************************************************
-****  					  						  			****
-****  				        z. BIBLIOGRAPHY	  				****
-****  					  						  			****
-****************************************************************
-****************************************************************
-****  					  						  			
-**** 	 1. http://asm.sourceforge.net/syscall.html#p31 	
-****  	 2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
-****	 2.1. Note : to implement more complex proc entries , use the seq_file wrapper
-****  	 3. https://www.linuxjournal.com/article/8110
-****	 4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html				  						  	
-****
-***************************************************************
-***************************************************************/
+/*
+ ################################################################################
+ #                                                                              #
+ #                             5. BIBLIOGRAPHY / SOURCES              			#
+ #                                                                              #
+ ################################################################################ 
+ 					  						  			
+       1. http://asm.sourceforge.net/syscall.html#p31 	
+       2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
+       3. https://www.linuxjournal.com/article/8110
+       4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html				  						  	
+
+*/
