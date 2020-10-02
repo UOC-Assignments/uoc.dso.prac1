@@ -8,14 +8,14 @@
 
  ############################################################################### 
  #                                                                             #
- #				     	   OPERATIVE SYSTEMS DESIGN (DSO)                      #
- #				               PRACTICAL ASSIGNMENT 1                          #
+ #                         OPERATIVE SYSTEMS DESIGN (DSO)                      #
+ #                             PRACTICAL ASSIGNMENT 1                          #
  #                                                                             #
- #				             STUDENT: Jordi Bericat Ruz                        #
+ #                           STUDENT: Jordi Bericat Ruz                        #
  #                                                                             #
- #				              FILE 1 OF 1: traceexit.c                         #
+ #                            FILE 1 OF 1: traceexit.c                         #
  #                                                                             #
- #				                    Version 1.1                                #
+ #                                  Version 1.1                                #
  #                                                                             #
  ###############################################################################
 
