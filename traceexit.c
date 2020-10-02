@@ -154,14 +154,25 @@ static struct file_operations myops =
 // ######## DISCLAIMER: The code below is an adaptation from the ones found at:
 // ########             -> "traceopen.c" provided in this assignment's .zip file  
 
+// ######## 3.1 - (?)
+
 extern unsigned sys_call_table[];
+
+// ######## 3.2 - 
 
 asmlinkage long (*original_sys_exit)(int) = NULL;
 
+// ######## 3.3 - 
+
 asmlinkage long new_sys_exit(int exit_code) 
 {
+// ######## 3.4 - 
+
   exit_codes_count[exit_code]++;
+
   printk ("exit code %d captured at /proc/traceexit\n", exit_code);
+
+// ######## 3.5 - 
   return original_sys_exit(exit_code);
 }
 
