@@ -5,7 +5,6 @@
  #                                                                              #
  ################################################################################
 
-
  ################################################################################
  #                                                                              #
  #                         OPERATIVE SYSTEMS DESIGN (DSO)                       #
@@ -19,7 +18,6 @@
  #                                  Version 1.1                                 #
  #                                                                              #
  ################################################################################
-
 
  ################################################################################
  #                                                                              #
@@ -70,46 +68,51 @@
  #                                                                              #
  ################################################################################
 
-/
-# 1. INICI 
 
-##### Declaracio i inicialitzacio de variables */
-
-/*
-
-INTRO:
-
-”
-*/
-
-#include <linux/module.h> /* We're doing kernel module 	work */
-#include <linux/fcntl.h> /* (?) */
-#include <linux/init.h>  /* (?) */
-//#include <linux/moduleparam.h> /* to obtain data from command-line as a paramenter - NOT NEEDED IN THIS PROJECT */
-#include <linux/kernel.h>	/* We're doing kernel work */
-#include <linux/proc_fs.h>	/* Necessary because we use the proc fs */
-#include <linux/uaccess.h>	/* for copy_from_user (move data from user to kernel) */
-#include <asm/unistd_32.h> /* syscall asm implementations (__NR_exit, etc) */
-
-#define BUFSIZE  100
-#define PROC_FILE "traceexit" //const char *HELLO2 = "Howdy";
+ _.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(_.~"(
 
 
+ ################################################################################
+ #                                                                              #
+ #                       1. INCLUDES, CONSTANTS & GLOBALS                       #
+ #                                                                              #
+ ################################################################################ */
+
+#include <linux/module.h> // We're doing kernel module 	work 
+#include <linux/fcntl.h> // (?) 
+#include <linux/init.h>  // (?) 
+#include <linux/kernel.h> // We're doing kernel work
+#include <linux/proc_fs.h>	// Necessary because we use the proc fs 
+#include <linux/uaccess.h>	// for copy_from_user (move data from user to kernel) 
+#include <asm/unistd_32.h> // syscall asm implementations (__NR_exit, etc) 
 
 MODULE_LICENSE ("GPL");
 
-/************ 1. PROC FS OPERATIONS IMPLEMENTATION ************/
+#define BUFSIZE  100
+#define PROC_FILE "traceexit" // more efficient alternative(?) -> const char *HELLO2 = "Howdy";
+#define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) // Disable read-only protection 
+#define GPF_ENABLE write_cr0(read_cr0() | 0x10000) // Enable read-only protection 
 
+static int exit_codes_count[999];
+
+/*
+
+ ################################################################################
+ #                                                                              #
+ #                       2. PROC FS OPERATIONS IMPLEMENTATION                   #
+ #                                                                              #
+ ################################################################################ */ 
+
+
+/* Adaptació del següent codi original: */
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Liran B.H");
 
-/*create the proc file*/
-
-static int exit_codes_count[999]; 
-
+//######## 2.1 create the proc file
 
 static struct proc_dir_entry *ent;
 
+//######## 2.2 Implement the read from user space procfs operation
  
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
@@ -134,21 +137,28 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 	*ppos = len;
 	return len;
 }
- 
+
+//######## 2.3 Set our custom read operation as default to access the module's
+//########     process memory space	
+
 static struct file_operations myops = 
 {
 	.owner = THIS_MODULE,
 	.read = myread,
-	//.write = mywrite,
 };
 
-/************************** END (1) *************************/
+/*
+ ################################################################################
+ #                                                                              #
+ #                       3. CUSTOM SYS EXIT IMPLEMENTATION                      #
+ #                                                                              #
+ ################################################################################ */
 
 extern unsigned sys_call_table[];
 
 asmlinkage long (*original_sys_exit)(int) = NULL;
 
-/************* 2. CUSTOM SYS EXIT IMPLEMENTATION ************/
+/************* 2.  ************/
 
 asmlinkage long
 new_sys_exit(int exit_code) 
@@ -158,12 +168,12 @@ new_sys_exit(int exit_code)
   return original_sys_exit(exit_code);
 }
 
-/************************** END (2) *************************/
-
-/************************* 3. MAIN **************************/
-
-#define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) /* Disable read-only protection */
-#define GPF_ENABLE write_cr0(read_cr0() | 0x10000) /* Enable read-only protection */
+/*
+ ################################################################################
+ #                                                                              #
+ #                      			  4. MAIN                      				#
+ #                                                                              #
+ ################################################################################ */
 
 static int __init
 traceexit_init (void)
