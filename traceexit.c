@@ -9,12 +9,12 @@
 				#                                               #
 				#           STUDENT: Jordi Bericat Ruz          #
 				#                                               #
-				#          	 FILE 1 OF 1: traceexit.c           #
+				#            FILE 1 OF 1: traceexit.c           #
 				#                                               #
 				#  IMPLEMENT A LINUX KERNEL MODULE THAT COUNTS 	#
 				#    EVERY EXIT SYSTEM CALL EXECUTED AND ALSO   #
 				#   ALLOWS ACCESS TO A SUMMARY FROM USER SPACE  #
-				# 			  INTERFACING VIA PROC FS          	#
+				#            INTERFACING VIA PROC FS            #
 				#                                               #
 				#                  Version 1.1                  #
 				#                                               #
