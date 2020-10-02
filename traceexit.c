@@ -52,8 +52,8 @@ dins l'espai de memòria del kernel assignat al procés del mòdul;
 #  INPUT:  		 			 									              #
 #                                                                             #
 #  OUTPUT:                                                                    #
-#                                                                             #                                                                             #
-#  SINTAXI I EXEMPLE D'US: Veure ajuda amb ./submit_jobs.sh --help            #
+#                                                                             #
+#  USAGE: See examples/usage.txt											  #
 #                                                                             #
 ###############################################################################
 
