@@ -1,14 +1,86 @@
-#include <linux/module.h>
+/*
+
+				#################################################
+				#                                               #
+				#     	UOC - Open University of Catalonia      #
+				#                                               #
+				#     	  OPERATIVE SYSTEMS DESIGN (DSO)        #
+				#             PRACTICAL ASSIGNMENT 1            #
+				#                                               #
+				#           STUDENT: Jordi Bericat Ruz          #
+				#                                               #
+				#          	 FILE 1 OF 1: traceexit.c           #
+				#                                               #
+				#  IMPLEMENT A LINUX KERNEL MODULE THAT COUNTS 	#
+				#    EVERY EXIT SYSTEM CALL EXECUTED AND ALSO   #
+				#   ALLOWS ACCESS TO A SUMMARY FROM USER SPACE  #
+				# 			  INTERFACING VIA PROC FS          	#
+				#                                               #
+				#                  Version 1.1                  #
+				#                                               #
+				#################################################
+
+
+###############################################################################
+#                                                                             #
+#  DESCRIPTION:                                                				  #
+#                                                                             #
+L’objectiu és implementar una interfície de comunicació entre els espais
+ de memoria d’usuari i del procés associat al mòdul (kernel), de manera 
+que un usuari podrá llegir desde la Shell (espai d’usuari) les dades 
+emmagatzamades a l’espai de mem. física exclusiva per al kernel 
+(comptadors crides sys_exit) mitjançant el fitxer procfs “virtual” 
+(interficie) “cat /proc/traceexit”. La escriptura es realitzarà des de 
+l’espai del kernel fet pel qual no caldrà una interficie d’escriptura 
+entre els dos espais de memoria (només s’ha d’implementar la interficie 
+de lectura.
+
+Pel que fa al monitoreig de les crides sys_exit i els seus codis 
+associats, només caldrà associar el codi de baix nivel (asm) que 
+realitza les tasques associades a la rutina sys_exit a una nova funció 
+(new_sys_exit) i assignar la execució d'aquesta al vector de crides del
+sistema (sys_call_table). En resum, estariem fent un "bypass" de la 
+crida original_sys_exit via la crida new_sys_exit, la qual a part 
+de realitzar la execució de les instruccions de la crida sys_exit, també
+emmagatzema la quantitat de vegades que s'executa un exit code concret 
+a l'array exit_codes_count[] (el qual tindrà un scope global accessible
+dins l'espai de memòria del kernel assignat al procés del mòdul;
+#                                                                             #
+#  IMPLEMENTATION STRATEGY:                                                   #
+#                                                                             #
+#                                                                             #
+#  INPUT:  		 			 									              #
+#                                                                             #
+#  OUTPUT:                                                                    #
+#                                                                             #                                                                             #
+#  SINTAXI I EXEMPLE D'US: Veure ajuda amb ./submit_jobs.sh --help            #
+#                                                                             #
+###############################################################################
+
+/
+# INICI DE L'SCRIPT
+
+##### Declaracio i inicialitzacio de variables */
+
+/*
+
+INTRO:
+
+”
+*/
+
+#include <linux/module.h> /* We're doing kernel module 	work */
 #include <linux/fcntl.h> /* (?) */
 #include <linux/init.h>  /* (?) */
-#include <linux/moduleparam.h> /* (?) */
+//#include <linux/moduleparam.h> /* to obtain data from command-line as a paramenter - NOT NEEDED IN THIS PROJECT */
 #include <linux/kernel.h>	/* We're doing kernel work */
 #include <linux/proc_fs.h>	/* Necessary because we use the proc fs */
-#include <linux/uaccess.h>	/* for copy_from_user */
-#include <asm/unistd_32.h> /* __NR_exit */
+#include <linux/uaccess.h>	/* for copy_from_user (move data from user to kernel) */
+#include <asm/unistd_32.h> /* syscall asm implementations (__NR_exit, etc) */
 
 #define BUFSIZE  100
 #define PROC_FILE "traceexit" //const char *HELLO2 = "Howdy";
+
 /***************************************************************
 ****************************************************************
 ****  					  						  			****
