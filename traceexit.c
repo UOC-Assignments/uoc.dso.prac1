@@ -12,7 +12,7 @@
  #                                                                              #
  #                        STUDENT: Jordi Bericat Ruz                            #
  #                           TERM: Autumn 2020/21                               #
- #					     GIT REPO: UOC-Assignments/uoc.dso.prac1"               #
+ #                       GIT REPO: UOC-Assignments/uoc.dso.prac1"               #
  #                                                                              #
  #                            FILE 1 OF 1: traceexit.c                          #
  #                                                                              #
