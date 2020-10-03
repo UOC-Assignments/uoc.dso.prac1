@@ -1,26 +1,26 @@
 # UOC - Open University of Catalonia                     
                                                                                
-## OPERATIVE SYSTEMS DESIGN (DSO
+## OPERATIVE SYSTEMS DESIGN (DSO)
 ## PRACTICAL ASSIGNMENT 1                           
                                                                   
-## STUDENT: Jordi Bericat Ruz
-## TERM: Autumn 2020/21
-## GIT REPO: UOC-Assignments/uoc.dso.prac1
-## FILE 1 OF 1: traceexit.c
-## Version 1.1
+### STUDENT: Jordi Bericat Ruz
+### TERM: Autumn 2020/21
+### GIT REPO: UOC-Assignments/uoc.dso.prac1
+### FILE 1 OF 1: traceexit.c
+### Version 1.1
 
 ----
                                     
-   DESCRIPTION:                                                                
+   **DESCRIPTION:**                                                                
                                                                                
    Implement a Linux Kernel module that keeps track of every exit system call  
    executed and also allows access to a summary from user space (interfacing   
    via procfs).                                                                
                                                                                
                                                                                
-   IMPLEMENTATION STRATEGY:                                                    
+   **IMPLEMENTATION STRATEGY:**                                                   
                                                                                
-   Exit System calls monitoring                                                
+   ***Exit System calls monitoring***                                             
                                                                                
    In regards to the exit syscall codes monitoring, we only have to call the   
    low-level assembler code which performs the sys_exit call associated tasks  
@@ -30,7 +30,7 @@
    case, to keep track of every exit system call executed once the kernel      
    module becomes enabled via insmod traceexit.ko).                            
                                                                                
-   Procfs Interface implementation                                             
+   ***Procfs Interface implementation***                                            
                                                                                
    The goal is to implement a communication interface between the user memory  
    space and the one associated with the kernel module, so an user will be     
@@ -41,18 +41,18 @@
    writing interface from user to kernel space won't be needed.                
                                                                                
                                                                                
-   INPUT:                                                                      
+   **INPUT:**                                                                     
                                                                                
    N/A                                                                         
                                                                                
                                                                                
-   OUTPUT:                                                                     
+   **OUTPUT:**                                                                    
                                                                                
    Summary at /proc/traceexit showing the amount of times every exit code      
    that has been invocated since the kernel module activation.                 
                                                                                
                                                                                
-   USAGE:                                                                      
+   **USAGE:**                                                                      
                                                                                
    See examples/usage.txt                                                      
                                                                                
