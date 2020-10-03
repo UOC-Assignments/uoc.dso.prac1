@@ -6,7 +6,7 @@
 
  ################################################################################
  #                                                                              #
- #                         OPERATIVE SYSTEMS DESIGN (DSO)                       #
+ #                         OPERATING SYSTEMS DESIGN (DSO)                       #
  #                             PRACTICAL ASSIGNMENT #1                          #
  #                                                                              #
  #                        STUDENT: Jordi Bericat Ruz                            #
@@ -86,7 +86,7 @@
 
 MODULE_LICENSE ("GPL");
 MODULE_AUTHOR ("Jordi B.R.");
-MODULE_DESCRIPTION ("OPERATIVE SYSTEMS DESIGN - PRACTICAL ASSIGNMENT #1 - Open University of Catalonia");
+MODULE_DESCRIPTION ("OPERATING SYSTEMS DESIGN - PRACTICAL ASSIGNMENT #1 - Open University of Catalonia");
 
 #define BUFSIZE  450
 #define PROC_FILE "traceexit" 
@@ -228,9 +228,9 @@ static int __init traceexit_init (void)
 
 // ######## 4.2 - Module INIT Function
 
-static void __exit
-traceexit_exit (void)
+static void __exit traceexit_exit (void)
 {
+
 // ######## 4.2.1 - Remove procfs entry
 
   proc_remove(ent);
