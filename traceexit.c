@@ -88,13 +88,16 @@ MODULE_LICENSE ("GPL");
 MODULE_AUTHOR ("Jordi B.R.");
 MODULE_DESCRIPTION ("OPERATING SYSTEMS DESIGN - PRACTICAL ASSIGNMENT #1 - Open University of Catalonia");
 
-#define BUFSIZE  450
+#define MAX_EXIT_CODES 256 // There only are 256 exit syscall code numbers (0-255).
+#define BUFSIZE  450 // Stack size = 1024Kb. Since we declare 2 buffers in the same function 
+                     // stack (myread), we can pnly assign (almost) half the stack size to 
+                     // each buffer (we leave a bit of space for other vars, etc)
 #define PROC_FILE "traceexit" 
 #define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) // Disable read-only protection 
 #define GPF_ENABLE write_cr0(read_cr0() | 0x10000) // Enable read-only protection 
 
 extern unsigned sys_call_table[];
-static int exit_codes_count[999];
+static int exit_codes_count[MAX_EXIT_CODES]; 
 static struct proc_dir_entry *ent;
 
 /*###############################################################################
@@ -118,7 +121,7 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 	if(*ppos > 0 || count < BUFSIZE)
 		return 0;
 
-	for (i=0;i<999;i++){
+	for (i=0;i<MAX_EXIT_CODES;i++){
 		if (exit_codes_count[i]!=0){
 			sprintf(tmp_str,"code %d = %d\n",i,exit_codes_count[i]);
 			strcat(str,tmp_str);
@@ -216,7 +219,7 @@ static int __init traceexit_init (void)
 
 // ######## 4.1.6 - Init sys_exit counters
 
-  for (z=0;z<999;z++){
+  for (z=0;z<MAX_EXIT_CODES;z++){
 	exit_codes_count[z]=0;
   }
 
