@@ -1,6 +1,6 @@
 # UOC - Open University of Catalonia                     
                                                                                
-## OPERATIVE SYSTEMS DESIGN (DSO) - PRACTICAL ASSIGNMENT #1                           
+## OPERATING SYSTEMS DESIGN (DSO) - PRACTICAL ASSIGNMENT #1                           
                                                                   
 ### STUDENT: Jordi Bericat Ruz
 ### TERM: Autumn 2020/21
