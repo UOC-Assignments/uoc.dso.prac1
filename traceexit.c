@@ -88,9 +88,10 @@
 
 MODULE_LICENSE ("GPL");
 MODULE_AUTHOR ("Jordi B.R.");
+MODULE_DESCRIPTION ("");
 
 #define BUFSIZE  100
-#define PROC_FILE "traceexit" // more efficient alternative(?) -> const char *HELLO2 = "Howdy";
+#define PROC_FILE "traceexit" 
 #define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) // Disable read-only protection 
 #define GPF_ENABLE write_cr0(read_cr0() | 0x10000) // Enable read-only protection 
 
