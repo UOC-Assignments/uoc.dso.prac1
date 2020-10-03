@@ -89,7 +89,7 @@ MODULE_AUTHOR ("Jordi B.R.");
 MODULE_DESCRIPTION ("OPERATING SYSTEMS DESIGN - PRACTICAL ASSIGNMENT #1 - Open University of Catalonia");
 
 #define MAX_EXIT_CODES 256 // There only are 256 exit syscall code numbers (0-255).
-#define BUFSIZE  450 // Stack size = 1024Kb. Since we declare 2 buffers in the same function 
+#define BUFSIZE  450 // Stack size = 1024 bytes. Since we declare 2 buffers in the same function 
                      // stack (myread), we can pnly assign (almost) half the stack size to 
                      // each buffer (we leave a bit of space for other vars, etc)
 #define PROC_FILE "traceexit" 
