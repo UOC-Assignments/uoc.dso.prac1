@@ -12,10 +12,8 @@
  #                        STUDENT: Jordi Bericat Ruz                            #
  #                           TERM: Autumn 2020/21                               #
  #                       GIT REPO: UOC-Assignments/uoc.dso.prac1"               #
- #                                                                              #
- #                            FILE 1 OF 1: traceexit.c                          #
- #                                                                              #
- #                                  Version 1.2                                 #
+ #                    FILE 1 OF 1: traceexit.c                                  #
+ #                        VERSION: 1.2                                          #
  #                                                                              #
  ################################################################################
 
@@ -78,23 +76,24 @@
  #                                                                              #
  ##############################################################################*/
 
-#include <linux/module.h> // We're doing kernel module 	work 
+#include <linux/module.h> // We're doing kernel module work 
 #include <linux/fcntl.h> // (?) 
 #include <linux/init.h>  // (?) 
 #include <linux/kernel.h> // We're doing kernel work
 #include <linux/proc_fs.h>	// Necessary because we use the proc fs 
-#include <linux/uaccess.h>	// for copy_from_user (move data from user to kernel) 
-#include <asm/unistd_32.h> // syscall asm implementations (__NR_exit, etc) 
+#include <linux/uaccess.h>	// for copy_from_user (move data from user's to kernel's spaces) 
+#include <asm/unistd_32.h> // system calls asm implementations (__NR_exit, etc) 
 
 MODULE_LICENSE ("GPL");
 MODULE_AUTHOR ("Jordi B.R.");
-MODULE_DESCRIPTION ("");
+MODULE_DESCRIPTION ("OPERATIVE SYSTEMS DESIGN - PRACTICAL ASSIGNMENT #1 - Open University of Catalonia");
 
 #define BUFSIZE  100
 #define PROC_FILE "traceexit" 
 #define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) // Disable read-only protection 
 #define GPF_ENABLE write_cr0(read_cr0() | 0x10000) // Enable read-only protection 
 
+extern unsigned sys_call_table[];
 static int exit_codes_count[999];
 static struct proc_dir_entry *ent;
 
@@ -104,8 +103,8 @@ static struct proc_dir_entry *ent;
  #                                                                              #
  ##############################################################################*/ 
 
-// ######## DISCLAIMER: The code below is an adaptation from the one found at
-// ########             BIBLIOGRAPHY (2)
+// ######## DISCLAIMER: The code below is an adaptation from the ones found at:
+// ########             5. BIBLIOGRAPHY -> (1.3), (2)  
 
 // ######## 2.1 Implement the read from user space procfs operation
  
@@ -149,27 +148,33 @@ static struct file_operations myops =
  ##############################################################################*/
 
 // ######## DISCLAIMER: The code below is an adaptation from the ones found at:
-// ########             -> "traceopen.c" provided in this assignment's .zip file  
+// ########             5. BIBLIOGRAPHY -> (1.2)  
 
-// ######## 3.1 - (?)
-
-extern unsigned sys_call_table[];
-
-// ######## 3.2 - 
+// ######## 3.1 - We declare a pointer to the function (routine), which will be used
+// ########       to point to the original sys_exit routine asm instructions 
 
 asmlinkage long (*original_sys_exit)(int) = NULL;
 
-// ######## 3.3 - 
+// ######## 3.2 - Now, in order to bypass the original sysexit routine and be able to
+// ########       modify its behaviour we should create a new function which will 
+// ########       implement the sysexit codes monitoring, as well as executing
+// ########       the original instructions related to the original exit system call:
 
 asmlinkage long new_sys_exit(int exit_code) 
 {
-// ######## 3.4 - 
+// ######## 3.3 - We increment by 1 the value contained in the "exit_code" 
+// ########       position of exit_codes_count[], hence every element on the array 
+// ########       will be storing one (and only one) exit code's counter; that is,
+// ########       the one corresponding to the index number:   
 
   exit_codes_count[exit_code]++;
 
   printk ("exit code %d captured at /proc/traceexit\n", exit_code);
 
-// ######## 3.5 - 
+// ######## 3.4 - Once we "hijacked" our code into the new sys_exit call (so we can monitor
+// ########       the system exit events), we should call the function that actually invoque 
+// ########       the original sysexit routine instructions:
+     
   return original_sys_exit(exit_code);
 }
 
@@ -180,15 +185,12 @@ asmlinkage long new_sys_exit(int exit_code)
  ##############################################################################*/
 
 // ######## DISCLAIMER: The code below is an adaptation from the ones found at:
-// ########             -> "traceopen.c" provided in this assignment's .zip file  
+// ########             5. BIBLIOGRAPHY -> (1.2), (1.3)  
 
 // ######## 4.1 - Module INIT Function
 
-static int __init
-traceexit_init (void)
+static int __init traceexit_init (void)
 {
-
-  int z;
 
 // ######## 4.1.1 - Create the proc file
 
@@ -213,6 +215,7 @@ traceexit_init (void)
 
 // ######## 4.1.6 - Init sys_exit counters
 
+  int z;
   for (z=0;z<999;z++){
 	exit_codes_count[z]=0;
   }
@@ -259,16 +262,19 @@ traceexit_exit (void)
 module_init (traceexit_init);
 module_exit (traceexit_exit);
 
-
 /*###############################################################################
  #                                                                              #
- #                             5. BIBLIOGRAPHY / SOURCES                        #
+ #                            5. BIBLIOGRAPHY / SOURCES                         #
  #                                                                              #
  ################################################################################ 
  					  						  			
-     1. http://asm.sourceforge.net/syscall.html#p31 	
+     1. Examples provided into the DSO Practical Assignment #1:
+	 1.1. examples/hw.c (example1)
+	 1.2. examples/procdemo.c (example2)
+	 1.3. examples/traceopen.c (example3)
      2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
      3. https://www.linuxjournal.com/article/8110
-     4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html				  						  	
+     4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html
+     5. http://asm.sourceforge.net/syscall.html#p31 			  						  	
 
 */
