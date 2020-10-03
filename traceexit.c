@@ -88,7 +88,7 @@ MODULE_LICENSE ("GPL");
 MODULE_AUTHOR ("Jordi B.R.");
 MODULE_DESCRIPTION ("OPERATIVE SYSTEMS DESIGN - PRACTICAL ASSIGNMENT #1 - Open University of Catalonia");
 
-#define BUFSIZE  100
+#define BUFSIZE  450
 #define PROC_FILE "traceexit" 
 #define GPF_DISABLE write_cr0(read_cr0() & (~ 0x10000)) // Disable read-only protection 
 #define GPF_ENABLE write_cr0(read_cr0() | 0x10000) // Enable read-only protection 
@@ -110,8 +110,8 @@ static struct proc_dir_entry *ent;
  
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
-	char buf[BUFSIZE*20];
-	char str[BUFSIZE*20];
+	char buf[BUFSIZE];
+	char str[BUFSIZE];
 	char tmp_str[20];
 	int len=0;
 	int i;
@@ -191,6 +191,7 @@ asmlinkage long new_sys_exit(int exit_code)
 
 static int __init traceexit_init (void)
 {
+  int z; //We move it here because this -> BIBLIOGRAPHY (6)
 
 // ######## 4.1.1 - Create the proc file
 
@@ -215,7 +216,6 @@ static int __init traceexit_init (void)
 
 // ######## 4.1.6 - Init sys_exit counters
 
-  int z;
   for (z=0;z<999;z++){
 	exit_codes_count[z]=0;
   }
@@ -275,6 +275,7 @@ module_exit (traceexit_exit);
      2. https://devarea.com/linux-kernel-development-creating-a-proc-file-and-interfacing-with-user-space/#.X3Kd42j7TD4		
      3. https://www.linuxjournal.com/article/8110
      4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html
-     5. http://asm.sourceforge.net/syscall.html#p31 			  						  	
+     5. http://asm.sourceforge.net/syscall.html#p31 
+     6. https://stackoverflow.com/questions/13291353/iso-c90-forbids-mixed-declarations-and-code-in-c			  						  	
 
 */
