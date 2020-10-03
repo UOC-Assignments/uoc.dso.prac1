@@ -1,12 +1,10 @@
 # UOC - Open University of Catalonia                     
                                                                                
-## OPERATIVE SYSTEMS DESIGN (DSO)
-## PRACTICAL ASSIGNMENT 1                           
+## OPERATIVE SYSTEMS DESIGN (DSO) - PRACTICAL ASSIGNMENT #1                           
                                                                   
 ### STUDENT: Jordi Bericat Ruz
 ### TERM: Autumn 2020/21
 ### GIT REPO: UOC-Assignments/uoc.dso.prac1
-### FILE 1 OF 1: traceexit.c
 ### Version 1.1
 
 ----
@@ -15,7 +13,8 @@
                                                                                
    Implement a Linux Kernel module that keeps track of every exit system call  
    executed and also allows access to a summary from user space (interfacing   
-   via procfs).                                                                
+   via procfs).
+                                                                
                                                                                
                                                                                
    **IMPLEMENTATION STRATEGY:**                                                   
@@ -28,7 +27,8 @@
    calls vector (sys_call_table). Summing-up: this way we bypass the original  
    sys_exit call (original_sys_exit) so we can modify its behaviour (in our    
    case, to keep track of every exit system call executed once the kernel      
-   module becomes enabled via insmod traceexit.ko).                            
+   module becomes enabled via insmod traceexit.ko).
+                            
                                                                                
    ***Procfs Interface implementation***                                            
                                                                                
@@ -38,18 +38,21 @@
    physical memory space reserved to the kernel (exit syscalls counters) via   
    the procfs "virtual" interface -> cat /proc/traceexit. Writing operations   
    will be performed from within the module (kernel memory space), so a        
-   writing interface from user to kernel space won't be needed.                
+   writing interface from user to kernel space won't be needed.
+                
                                                                                
                                                                                
    **INPUT:**                                                                     
                                                                                
-   N/A                                                                         
+   N/A
+                                                                         
                                                                                
                                                                                
    **OUTPUT:**                                                                    
                                                                                
    Summary at /proc/traceexit showing the amount of times every exit code      
-   that has been invocated since the kernel module activation.                 
+   that has been invocated since the kernel module activation.
+                 
                                                                                
                                                                                
    **USAGE:**                                                                      
