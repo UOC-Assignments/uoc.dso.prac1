@@ -77,11 +77,11 @@
  ##############################################################################*/
 
 #include <linux/module.h> // We're doing kernel module work 
-#include <linux/fcntl.h> // (?) 
-#include <linux/init.h>  // (?) 
+#include <linux/fcntl.h> // File control options -> 5. BIBLIOGRAPHY (7)
+#include <linux/init.h>  // Needed for the __INIT and __EXIT Macros -> 5. BIBLIOGRAPHY (8)
 #include <linux/kernel.h> // We're doing kernel work
-#include <linux/proc_fs.h>	// Necessary because we use the proc fs 
-#include <linux/uaccess.h>	// for copy_from_user (move data from user's to kernel's spaces) 
+#include <linux/proc_fs.h> // Necessary because we use the proc fs 
+#include <linux/uaccess.h> // for copy_from_user (move data from user's to kernel's spaces) 
 #include <asm/unistd_32.h> // system calls asm implementations (__NR_exit, etc) 
 
 MODULE_LICENSE ("GPL");
@@ -279,6 +279,8 @@ module_exit (traceexit_exit);
      3. https://www.linuxjournal.com/article/8110
      4. https://www.linuxtopia.org/online_books/Linux_Kernel_Module_Programming_Guide/x714.html
      5. http://asm.sourceforge.net/syscall.html#p31 
-     6. https://stackoverflow.com/questions/13291353/iso-c90-forbids-mixed-declarations-and-code-in-c			  						  	
+     6. https://stackoverflow.com/questions/13291353/iso-c90-forbids-mixed-declarations-and-code-in-c
+     7. https://man7.org/linux/man-pages/man0/fcntl.h.0p.html
+     8. http://www.iitk.ac.in/LDP/LDP/lkmpg/2.4/html/x281.htm			  						  	
 
 */
