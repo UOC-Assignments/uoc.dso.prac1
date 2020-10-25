@@ -11,9 +11,9 @@
  #                                                                              #
  #                        STUDENT: Jordi Bericat Ruz                            #
  #                           TERM: Autumn 2020/21                               #
- #                       GIT REPO: UOC-Assignments/uoc.dso.prac1"               #
+ #                       GIT REPO: UOC-Assignments/uoc.dso.prac1                #
  #                    FILE 1 OF 1: traceexit.c                                  #
- #                        VERSION: 1.2                                          #
+ #                        VERSION: 1.3                                          #
  #                                                                              #
  ################################################################################
 
@@ -168,17 +168,28 @@ asmlinkage long new_sys_exit(int exit_code)
 // ######## 3.3 - We increment by 1 the value contained in the "exit_code" 
 // ########       position of exit_codes_count[], hence every element on the array 
 // ########       will be storing one (and only one) exit code's counter; that is,
-// ########       the one corresponding to the index number:   
+// ########       the one corresponding to the index number. Moreover, we also check
+// ########       if the error code is in between the accepted values (0 - 255). 
+// ########       If not, we raise a notification and do not return the code to the 
+// ########       original sys_exit routine.
 
-  exit_codes_count[exit_code]++;
+  if (exit_code < 0 || exit_code > 255) {
 
-  printk ("exit code %d captured at /proc/traceexit\n", exit_code);
+	printk ("Incorrect exit code --> %d WAS NEITHER EXECUTED NOR CAPTURED IN /proc/traceexit.\n", exit_code);
+	return;
+
+	} else {
+
+		exit_codes_count[exit_code]++;
+
+		printk ("exit code %d captured at /proc/traceexit\n", exit_code);
 
 // ######## 3.4 - Once we "hijacked" our code into the new sys_exit call (so we can monitor
 // ########       the system exit events), we should call the function that actually invoque 
 // ########       the original sysexit routine instructions:
-     
-  return original_sys_exit(exit_code);
+		 
+		return original_sys_exit(exit_code);
+	}
 }
 
 /*###############################################################################
