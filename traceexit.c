@@ -170,9 +170,17 @@ asmlinkage long new_sys_exit(int exit_code)
 // ########       will be storing one (and only one) exit code's counter; that is,
 // ########       the one corresponding to the index number:   
 
-  exit_codes_count[exit_code]++;
+  if (exit_code < 0 || exit_code > 255) {
 
-  printk ("exit code %d captured at /proc/traceexit\n", exit_code);
+	printk ("Incorrect exit code --> %d WAS NOT captured at /proc/traceexit\n", exit_code);
+
+} else {
+
+	exit_codes_count[exit_code]++;
+
+	printk ("exit code %d captured at /proc/traceexit\n", exit_code);
+
+}
 
 // ######## 3.4 - Once we "hijacked" our code into the new sys_exit call (so we can monitor
 // ########       the system exit events), we should call the function that actually invoque 
