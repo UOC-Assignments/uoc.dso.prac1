@@ -51,18 +51,20 @@
  #                                                                              #
  #  INPUT:                                                                      #
  #                                                                              #
- #  N/A                                                                         #
+ #  Exit codes passed as an argument on the sys_exit call routines executed     #
+ #  either when those occur "naturally" in the system or "forced" using the     #
+ #  provided "exit_call.c" script.                                              #
  #                                                                              #
  #                                                                              #
  #  OUTPUT:                                                                     #
  #                                                                              #
- #  Summary at /proc/traceexit showing the amount of times every exit code      #
- #  that has been invocated since the kernel module activation.                 #
- #                                                                              #
+ #  Summary via the /proc/traceexit interface showing how many times every exit # 
+ #  code has been invocated since the kernel module activation                  #
  #                                                                              #
  #  USAGE:                                                                      #
  #                                                                              #
- #  See examples/usage.txt                                                      #
+ #  root@localhost:~/insmod traceexit.ko                                        #  
+ #  root@localhost:~/cat /proc/traceexit                                        #
  #                                                                              #
  ################################################################################
 
